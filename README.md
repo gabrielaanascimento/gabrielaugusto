@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio & Engineering Hub | Gabriel Augusto
 
-## Getting Started
+Portfólio pessoal e hub de engenharia desenvolvido para destacar minha trajetória como Desenvolvedor Full-Stack e Estudante de Engenharia Mecânica no IFSP. O projeto integra soluções modernas de software com projetos e conceitos de engenharia e IoT.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Tecnologias Utilizadas
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Este projeto foi construído utilizando tecnologias de ponta do ecossistema web:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* **Framework:** [Next.js](https://nextjs.org/) (App Router)
+* **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
+* **Estilização:** [Tailwind CSS](https://tailwindcss.com/)
+* **Banco de Dados & ORM:** PostgreSQL (Neon DB) & [Prisma ORM](https://www.prisma.io/)
+* **Componentes & Animações:** Framer Motion / UI personalizados
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📂 Estrutura do Projeto
 
-To learn more about Next.js, take a look at the following resources:
+* `app/` - Rotas, páginas e layouts principais baseados no App Router (incluindo seções de projetos, sobre e rotas dinâmicas).
+* `components/` - Componentes reutilizáveis de interface (botões, partículas, terminais, etc.).
+* `services/` - Camada de serviços responsável pelas consultas ao banco de dados via Prisma.
+* `prisma/` - Esquema do banco de dados e migrações.
+* `public/` - Arquivos estáticos, imagens de perfil e banners de redes sociais.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ⚙️ Como Executar o Projeto Localmente
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/gabrielaanascimento/gabrielaugusto](https://github.com/gabrielaanascimento/gabrielaugusto)
+   cd seu-repositorio

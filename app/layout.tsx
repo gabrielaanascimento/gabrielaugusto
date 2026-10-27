@@ -19,8 +19,43 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gabriel Augusto - Portfólio",
-  description: "Engenharia Mecânica & Desenvolvimento Full-Stack",
+  title: 'Gabriel Augusto | Portfólio & Engenharia',
+  description: 'Estudante de Engenharia Mecânica no IFSP e desenvolvedor Full-Stack. Projeto componentes no CAD e construo software que funciona.',
+  keywords: ['Desenvolvedor Full-Stack', 'Engenharia Mecânica', 'React', 'Next.js', 'TypeScript', 'Portfólio', 'FEA', 'CAD', 'IFSP', 'Gabriel Augusto', 'Desenvolvimento Web', 'Programação', 'Tecnologia', 'Inovação', 'Projetos de Engenharia', 'Simulação Estrutural', 'Análise de Elementos Finitos', 'Desenvolvimento de Aplicações', 'Engenharia e Tecnologia', 'Tecnico em Informática para internet'],
+  authors: [{ name: 'Gabriel Augusto' }],
+  creator: 'Gabriel Augusto',
+
+  // Configuração para Redes Sociais (Open Graph)
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    url: 'https://gabrielaugusto.online',
+    title: 'Gabriel Augusto | Portfólio & Engenharia',
+    description: 'Estudante de Engenharia Mecânica no IFSP e desenvolvedor Full-Stack.',
+    siteName: 'Portfólio Gabriel Augusto',
+    images: [
+      {
+        url: 'https://gabrielaugusto.online/banner.jpg', // Coloque a imagem real na pasta public
+        width: 1200,
+        height: 630,
+        alt: 'Gabriel Augusto Portfólio',
+      },
+    ],
+  },
+
+  // Configuração para o Twitter
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gabriel Augusto | Portfólio & Engenharia',
+    description: 'Estudante de Engenharia Mecânica no IFSP e desenvolvedor Full-Stack.',
+    images: ['https://gabrielaugusto.online/banner.jpg'],
+  },
+
+  // Outras configurações (Robôs e Tema)
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export const instant = false;
