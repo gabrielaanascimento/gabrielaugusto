@@ -3,17 +3,20 @@ import { Timeline } from './Timeline';
 
 interface AboutSectionProps {
     about?: {
+        name?: string | null;
+        role?: string | null;
+        linkedin?: string | null;
+        github?: string | null;
+        email?: string | null;
         bio?: string | null;
         [key: string]: any;
-    };
+    } | null; // <--- Adicionado o "| null" aqui para aceitar o retorno do Prisma
 }
 
 export function AboutSection({ about }: AboutSectionProps) {
-    // Pega o texto do banco e substitui qualquer quebra de linha literal "\n" pelo caractere real,
-    // ou usa o texto padrão caso a bio venha vazia.
+    // Restante do código continua igual...
     const rawBio = about?.bio || "Olá! Meu nome é Gabriel Augusto, moro em Poá – SP. Minha jornada começou na tecnologia: no Técnico em Informática para Internet na ETEC de Poá (2023–2025) descobri a paixão por resolver problemas através do código, desenvolvendo projetos web, mobile e APIs.\n\nEm 2026 iniciei o Bacharelado em Engenharia Mecânica no IFSP – Campus Itaquaquecetuba, e hoje faço parte da equipe Itaquaero (SAE Brasil Aerodesign), atuando em dimensionamento estrutural, modelagem 3D e simulações FEA e CFD. Tenho forte senso de organização e comunicação, essenciais em equipes multidisciplinares, e minha base em TI me dá facilidade para transitar entre ferramentas e aprender rápido.";
 
-    // Remove eventuais barras invertidas literais (caso estejam salvas como "\n\n") e divide em parágrafos reais
     const cleanBio = rawBio.replace(/\\n/g, '\n');
     const paragraphs = cleanBio.split(/\r?\n\n/);
 
