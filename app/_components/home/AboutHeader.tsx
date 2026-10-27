@@ -1,7 +1,24 @@
 import Link from 'next/link';
-import { SOCIAL_LINKS } from '@/app/_constants/about';
 
-export function AboutHeader() {
+interface AboutHeaderProps {
+    about?: {
+        name?: string;
+        role?: string;
+        linkedin?: string;
+        github?: string;
+        email?: string;
+        [key: string]: any;
+    };
+}
+
+export function AboutHeader({ about }: AboutHeaderProps) {
+    // Monta os links sociais dinamicamente com base no que está cadastrado no banco
+    const socialLinks = [
+        about?.linkedin && { label: 'LinkedIn', href: about.linkedin },
+        about?.github && { label: 'GitHub', href: about.github },
+        about?.email && { label: 'E-mail', href: `mailto:${about.email}` },
+    ].filter(Boolean) as Array<{ label: string; href: string }>;
+
     return (
         <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-16">
             {/* Badge Superior */}
@@ -16,15 +33,15 @@ export function AboutHeader() {
 
             {/* Nome e Apresentação Principal */}
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
-                Gabriel Augusto
+                {about?.name || "Gabriel Augusto"}
             </h1>
             <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8 max-w-xl">
-                Estudante de Engenharia Mecânica no IFSP e desenvolvedor Full-Stack. Projeto componentes no CAD e construo software que funciona — dois mundos, o mesmo raciocínio lógico.
+                {about?.role || "Estudante de Engenharia Mecânica no IFSP e desenvolvedor Full-Stack. Projeto componentes no CAD e construo software que funciona — dois mundos, o mesmo raciocínio lógico."}
             </p>
 
-            {/* Botões Sociais */}
+            {/* Botões Sociais Dinâmicos */}
             <div className="flex flex-wrap items-center justify-center gap-3">
-                {SOCIAL_LINKS.map((item) => (
+                {socialLinks.map((item) => (
                     <Link
                         key={item.label}
                         href={item.href}

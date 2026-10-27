@@ -1,17 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { SOFTWARE_SKILLS, SOFTWARE_PROJECTS } from '@/app/_constants/software';
 import { SoftwareCategory } from '@/app/_types';
 import { SkillCategoryCard } from './SkillCategoryCard';
 import { SoftwareProjectCard } from './SoftwareProjectCard';
 
 const CATEGORIES: SoftwareCategory[] = ['Todos', 'Web', 'Back-end', 'Mobile'];
 
-export function SoftwareSection() {
+interface SoftwareSectionProps {
+    softwareProjects: any[];
+    softwareSkills: any[];
+}
+
+export function SoftwareSection({ softwareProjects = [], softwareSkills = [] }: SoftwareSectionProps) {
     const [selectedCategory, setSelectedCategory] = useState<SoftwareCategory>('Todos');
 
-    const filteredProjects = SOFTWARE_PROJECTS.filter((project) =>
+    const filteredProjects = softwareProjects.filter((project) =>
         selectedCategory === 'Todos' ? true : project.category === selectedCategory
     );
 
@@ -32,10 +36,10 @@ export function SoftwareSection() {
                     </p>
                 </div>
 
-                {/* Competências de Software */}
+                {/* Competências de Software vindas do Banco */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                    {SOFTWARE_SKILLS.map((group) => (
-                        <SkillCategoryCard key={group.category} group={group} />
+                    {softwareSkills.map((group) => (
+                        <SkillCategoryCard key={group.id} group={group} />
                     ))}
                 </div>
 
@@ -46,8 +50,8 @@ export function SoftwareSection() {
                             key={cat}
                             onClick={() => setSelectedCategory(cat)}
                             className={`px-5 py-2 rounded-full text-xs font-semibold transition-all ${selectedCategory === cat
-                                ? 'bg-black text-white shadow-xs'
-                                : 'bg-transparent text-gray-800 border border-gray-400 hover:bg-gray-200'
+                                    ? 'bg-black text-white shadow-xs'
+                                    : 'bg-transparent text-gray-800 border border-gray-400 hover:bg-gray-200'
                                 }`}
                         >
                             {cat}

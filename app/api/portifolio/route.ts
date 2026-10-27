@@ -8,7 +8,7 @@ function validateApiKey(request: NextRequest) {
     return apiKey === validKey;
 }
 
-export async function GET(request: NextRequest) {
+export async function PUT(request: NextRequest) {
     if (!validateApiKey(request)) {
         return NextResponse.json(
             { error: 'Acesso negado. API Key inválida ou ausente.' },
@@ -17,42 +17,62 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        // Consulta em paralelo todas as tabelas no Neon DB
-        const [
-            navLinks,
-            about,
-            expertises,
-            areas,
-            engineeringProjects,
-            softwareProjects,
-            iotData
-        ] = await Promise.all([
-            prisma.navLink.findMany({ orderBy: { order: 'asc' } }),
-            prisma.aboutInfo.findFirst(),
-            prisma.expertise.findMany({ orderBy: { order: 'asc' } }),
-            prisma.area.findMany({ include: { projects: true } }),
-            prisma.engineeringProject.findMany(),
-            prisma.softwareProject.findMany(),
-            prisma.ioTSection.findFirst(),
-        ]);
+        const body = await request.json();
+        const { type, id, ...data } = body;
 
-        return NextResponse.json({
-            success: true,
-            data: {
-                navigation: navLinks,
-                about,
-                expertises,
-                areas,
-                engineeringProjects,
-                softwareProjects,
-                iot: iotData,
-            }
-        }, { status: 200 });
+        let updatedRecord;
+
+        // O 'type' define qual tabela/model você deseja atualizar
+        switch (type) {
+            case 'about':
+                updatedRecord = await prisma.aboutInfo.update({
+                    where: { id },
+                    data,
+                });
+                break;
+            case 'navLink':
+                updatedRecord = await prisma.navLink.update({
+                    where: { id },
+                    data,
+                });
+                break;
+            case 'expertise':
+                updatedRecord = await prisma.expertise.update({
+                    where: { id },
+                    data,
+                });
+                break;
+            case 'engineeringProject':
+                updatedRecord = await prisma.engineeringProject.update({
+                    where: { id },
+                    data,
+                });
+                break;
+            case 'softwareProject':
+                updatedRecord = await prisma.softwareProject.update({
+                    where: { id },
+                    data,
+                });
+                break;
+            case 'iot':
+                updatedRecord = await prisma.ioTSection.update({
+                    where: { id },
+                    data,
+                });
+                break;
+            default:
+                return NextResponse.json(
+                    { error: 'Tipo de entidade inválido para atualização.' },
+                    { status: 400 }
+                );
+        }
+
+        return NextResponse.json({ success: true, data: updatedRecord }, { status: 200 });
 
     } catch (error) {
-        console.error('Erro ao consultar banco de dados:', error);
+        console.error('Erro ao atualizar dados no Neon DB:', error);
         return NextResponse.json(
-            { error: 'Erro interno ao consultar o Neon DB.' },
+            { error: 'Erro interno ao atualizar os dados.' },
             { status: 500 }
         );
     }

@@ -23,12 +23,14 @@ export const metadata: Metadata = {
   description: "Engenharia Mecânica & Desenvolvimento Full-Stack",
 };
 
+export const instant = false;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Busca todos os dados da API/Neon DB no carregamento inicial (o loading.tsx cobre esta espera)
+  // Busca os dados diretamente; o app/loading.tsx gerencia a espera de forma global
   const portfolioData = await fetchAllPortfolioData();
   const navLinks = portfolioData?.navigation || [];
 

@@ -79,6 +79,7 @@ model SoftwareProject {
   id          String   @id @default(uuid())
   title       String
   description String
+  category    String?
   bannerText  String
   tags        String[]
   projectUrl  String?
@@ -93,4 +94,21 @@ model IoTSection {
   description String
   tags        String[]
   createdAt   DateTime @default(now())
+}
+
+model SoftwareSkill {
+  id        String             @id @default(uuid())
+  name      String             @unique
+  level     String? // Opcional, caso queira guardar nível futuramente
+  groupId   String
+  group     SoftwareSkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt DateTime           @default(now())
+}
+
+model SoftwareSkillGroup {
+  id        String          @id @default(uuid())
+  category  String          @unique
+  skills    SoftwareSkill[]
+  order     Int             @default(0)
+  createdAt DateTime        @default(now())
 }

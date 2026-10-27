@@ -1,25 +1,42 @@
-const API_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-const API_KEY = process.env.API_SECRET_KEY || 'sua-chave-secreta-super-segura-123';
+import { prisma } from '@/lib/prisma';
 
 export async function fetchAllPortfolioData() {
     try {
-        const res = await fetch(`${API_URL}/api/portfolio`, {
-            headers: {
-                'x-api-key': API_KEY,
-            },
-            // 'force-cache' ou revalidate garante que os dados sejam cacheados 
-            // após a primeira requisição bem-sucedida, matando o loading nas próximas navegações
-            next: { revalidate: 3600 },
-        });
+        const [
+            navLinks,
+            about,
+            expertises,
+            areas,
+            engineeringProjects,
+            softwareProjects,
+            iotData,
+            softwareSkillGroups // <--- Adicionado aqui
+        ] = await Promise.all([
+            prisma.navLink.findMany({ orderBy: { order: 'asc' } }),
+            prisma.aboutInfo.findFirst(),
+            prisma.expertise.findMany({ orderBy: { order: 'asc' } }),
+            prisma.area.findMany({ include: { projects: true } }),
+            prisma.engineeringProject.findMany(),
+            prisma.softwareProject.findMany(),
+            prisma.ioTSection.findFirst(),
+            prisma.softwareSkillGroup.findMany({
+                orderBy: { order: 'asc' },
+                include: { skills: true }, // Traz as habilidades relacionadas de cada grupo
+            }),
+        ]);
 
-        if (!res.ok) {
-            throw new Error('Falha ao comunicar com a API do portfólio.');
-        }
-
-        const json = await res.json();
-        return json.data;
+        return {
+            navigation: navLinks,
+            about,
+            expertises,
+            areas,
+            engineeringProjects,
+            softwareProjects,
+            iot: iotData,
+            softwareSkills: softwareSkillGroups, // <--- Retorna para o front-end
+        };
     } catch (error) {
-        console.error('Erro no portfolioService:', error);
-        throw error;
+        console.error('Erro no portfolioService ao consultar o Prisma:', error);
+        return null;
     }
 }

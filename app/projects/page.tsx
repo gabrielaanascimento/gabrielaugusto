@@ -1,15 +1,23 @@
-
 import { EngineeringSection } from '@/app/_components/home/EngineeringSection';
 import { SoftwareSection } from '@/app/_components/home/SoftwareSection';
-import { Particles } from "@/components/ui/particles"
+import { Particles } from "@/components/ui/particles";
+import { fetchAllPortfolioData } from "@/services/portfolioService";
 
-export default function ProjectsPage() {
+export const instant = false;
+
+async function ProjectsContent() {
+    const data = await fetchAllPortfolioData();
+
     return (
         <div className="relative min-h-screen bg-[#eaeaea]">
             <div className="relative z-10 divide-y divide-gray-300">
+                <EngineeringSection engineeringProjects={data?.engineeringProjects || []} />
 
-                <EngineeringSection />
-                <SoftwareSection />
+                {/* Passando os dados dinâmicos das skills e projetos de software */}
+                <SoftwareSection
+                    softwareProjects={data?.softwareProjects || []}
+                    softwareSkills={data?.softwareSkills || []}
+                />
             </div>
 
             <Particles
@@ -19,7 +27,12 @@ export default function ProjectsPage() {
                 color={"#000000"}
                 refresh
             />
-
         </div>
+    );
+}
+
+export default function ProjectsPage() {
+    return (
+        <ProjectsContent />
     );
 }

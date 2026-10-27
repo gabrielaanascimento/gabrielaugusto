@@ -12,7 +12,7 @@ export function SoftwareProjectCard({ project }: { project: SoftwareProject }) {
                     </span>
 
                     {/* Gradiente sutil cobrindo a parte inferior da imagem/banner */}
-                    <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-white/10" />
+                    <div className="absolute inset-x-0 bottom-0 h-10 bg-linear-to-b from-transparent to-white/10" />
                 </div>
 
                 {/* Detalhes do Projeto com margem negativa para sobrepor o banner */}

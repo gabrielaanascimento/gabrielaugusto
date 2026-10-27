@@ -1,8 +1,11 @@
-import { ENGINEERING_SKILLS } from '@/app/_constants/engineering';
 import { SkillCategoryCard } from './SkillCategoryCard';
 import { ItaquaeroCard } from './ItaquaeroCard';
 
-export function EngineeringSection() {
+interface EngineeringSectionProps {
+  engineeringProjects?: any[]; // Você pode tipar melhor com a interface do seu Prisma se preferir
+}
+
+export function EngineeringSection({ engineeringProjects = [] }: EngineeringSectionProps) {
   return (
     <section id="engineering" className="py-16 px-6 flex justify-center">
       <div className="max-w-6xl w-full">
@@ -20,12 +23,17 @@ export function EngineeringSection() {
           </p>
         </div>
 
-        {/* Grid de Competências */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {ENGINEERING_SKILLS.map((group) => (
-            <SkillCategoryCard key={group.category} group={group} />
-          ))}
-        </div>
+        {/* Grid de Projetos de Engenharia vindos do banco (se houver) */}
+        {engineeringProjects.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {engineeringProjects.map((project) => (
+              <div key={project.id} className="p-6 border border-gray-300 rounded-lg bg-white shadow-xs">
+                <h3 className="font-bold text-lg mb-2">{project.title}</h3>
+                <p className="text-gray-600 text-sm">{project.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Projeto Itaquaero */}
         <ItaquaeroCard />

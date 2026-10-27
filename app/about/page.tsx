@@ -1,13 +1,16 @@
-
 import { AboutSection } from '@/app/_components/home/AboutSection';
+import { Particles } from "@/components/ui/particles";
+import { fetchAllPortfolioData } from "@/services/portfolioService";
 
-import { Particles } from "@/components/ui/particles"
+export const instant = false;
 
-export default function AboutPage() {
+export default async function AboutPage() {
+    const data = await fetchAllPortfolioData();
+
     return (
         <div className="relative min-h-screen bg-[#eaeaea]">
             <div className="relative z-10 divide-y divide-gray-300">
-                <AboutSection />
+                <AboutSection about={data?.about} />
             </div>
 
             <Particles
@@ -17,7 +20,6 @@ export default function AboutPage() {
                 color={"#000000"}
                 refresh
             />
-
         </div>
     );
 }
