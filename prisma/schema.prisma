@@ -1,0 +1,96 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. Navegação Principal (navigation.ts)
+model NavLink {
+  id        String   @id @default(uuid())
+  label     String
+  href      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// 2. Sobre e Dados Pessoais (about.ts)
+model AboutInfo {
+  id             String   @id @default(uuid())
+  name           String
+  role           String
+  location       String
+  email          String
+  phone          String
+  linkedin       String
+  github         String
+  terminalPrompt String
+  terminalOutput String[]
+  bio            String
+  createdAt      DateTime @default(now())
+}
+
+// 3. Seção de Expertise / Áreas Principais (expertise.ts)
+model Expertise {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  link        String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// 4. Páginas Detalhadas por Área (areasData.ts)
+model Area {
+  id           String    @id @default(uuid())
+  slug         String    @unique
+  title        String
+  badge        String
+  description  String
+  technologies String[]
+  projects     Project[]
+  createdAt    DateTime  @default(now())
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  tag         String
+  areaSlug    String
+  area        Area     @relation(fields: [areaSlug], references: [slug], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+// 5. Projetos de Engenharia Mecânica (engineering.ts)
+model EngineeringProject {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  category    String
+  software    String[]
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+}
+
+// 6. Projetos de Software (software.ts)
+model SoftwareProject {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  bannerText  String
+  tags        String[]
+  projectUrl  String?
+  createdAt   DateTime @default(now())
+}
+
+// 7. Sistemas Embarcados & IoT (iot.ts)
+model IoTSection {
+  id          String   @id @default(uuid())
+  badge       String
+  title       String
+  description String
+  tags        String[]
+  createdAt   DateTime @default(now())
+}
