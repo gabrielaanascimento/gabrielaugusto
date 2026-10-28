@@ -46,12 +46,12 @@ export function ExpertiseSection() {
                                     </p>
                                 </div>
 
-                                <Link
+                                {/* <Link
                                     href={area.link}
                                     className="inline-flex items-center text-sm font-semibold text-black group-hover:translate-x-1 transition-transform"
                                 >
                                     Ver mais &rarr;
-                                </Link>
+                                </Link>*/}
                             </div>
                         ))}
                     </div>

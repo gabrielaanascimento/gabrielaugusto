@@ -1,5 +1,6 @@
 import { SoftwareProject } from '@/app/_types';
 import { Badge } from '@/app/_components/ui/Badge';
+import Link from 'next/link';
 
 export function SoftwareProjectCard({ project }: { project: SoftwareProject }) {
     return (
@@ -31,9 +32,11 @@ export function SoftwareProjectCard({ project }: { project: SoftwareProject }) {
 
             {/* Botão Ver Projeto */}
             <div className="px-6 pb-6 pt-0">
-                <button className="w-full bg-black text-white text-xs font-semibold py-2.5 rounded-xl hover:bg-gray-800 transition-colors shadow-xs">
-                    Ver Projeto
-                </button>
+                <Link href={`/project/${project.id}`} passHref>
+                    <button className="w-full bg-black text-white text-xs font-semibold py-2.5 rounded-xl hover:bg-gray-800 transition-colors shadow-xs">
+                        Ver Projeto
+                    </button>
+                </Link>
             </div>
         </div>
     );
