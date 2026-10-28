@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     siteName: 'Portfólio Gabriel Augusto',
     images: [
       {
-        url: 'https://github.com/gabrielaanascimento/gabrielaugusto/blob/main/public/banner.jpg',
+        url: 'https://gabrielaugusto.online/banner.jpg',
         width: 1200,
         height: 630,
         alt: 'Gabriel Augusto Portfólio',
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Gabriel Augusto | Portfólio & Engenharia',
     description: 'Estudante de Engenharia Mecânica no IFSP e desenvolvedor Full-Stack.',
-    images: ['https://github.com/gabrielaanascimento/gabrielaugusto/blob/main/public/banner.jpg'],
+    images: ['https://gabrielaugusto.online/banner.jpg'],
   },
 
   // Outras configurações (Robôs e Tema)
