@@ -115,3 +115,11 @@ model SoftwareSkillGroup {
   order     Int             @default(0)
   createdAt DateTime        @default(now())
 }
+
+model Message {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  content   String
+  createdAt DateTime @default(now())
+}

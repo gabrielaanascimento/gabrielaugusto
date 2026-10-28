@@ -1,6 +1,39 @@
+'use client';
+
+import { useState } from 'react';
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaLinkedin } from "react-icons/fa";
+import { saveContactMessage } from '@/services/contactService';
 
 export function ContactSection() {
+    const [loading, setLoading] = useState(false);
+    const [feedback, setFeedback] = useState<{ success: boolean; message: string } | null>(null);
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setLoading(true);
+        setFeedback(null);
+
+        const formData = new FormData(e.currentTarget);
+        const name = formData.get('name') as string;
+        const email = formData.get('email') as string;
+        const content = formData.get('content') as string;
+
+        try {
+            const result = await saveContactMessage({ name, email, content });
+
+            if (result.success) {
+                setFeedback({ success: true, message: 'Mensagem enviada com sucesso! Obrigado pelo contato.' });
+                e.currentTarget.reset(); // Limpa o formulário
+            } else {
+                setFeedback({ success: false, message: result.error || 'Ocorreu um erro ao enviar.' });
+            }
+        } catch (err) {
+            setFeedback({ success: false, message: 'Erro de conexão. Tente novamente.' });
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <section id="contact" className="py-20 px-6 flex justify-center">
             <div className="max-w-4xl w-full space-y-12">
@@ -84,12 +117,14 @@ export function ContactSection() {
                         Envie uma mensagem
                     </h3>
 
-                    <form className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs font-semibold text-gray-700 mb-1.5">Seu nome</label>
                                 <input
                                     type="text"
+                                    name="name"
+                                    required
                                     placeholder="Ex: Carlos Silva"
                                     className="w-full bg-white/80 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-black transition-colors"
                                 />
@@ -98,6 +133,8 @@ export function ContactSection() {
                                 <label className="block text-xs font-semibold text-gray-700 mb-1.5">Seu e-mail</label>
                                 <input
                                     type="email"
+                                    name="email"
+                                    required
                                     placeholder="exemplo@email.com"
                                     className="w-full bg-white/80 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-black transition-colors"
                                 />
@@ -107,17 +144,26 @@ export function ContactSection() {
                         <div>
                             <label className="block text-xs font-semibold text-gray-700 mb-1.5">Sua mensagem</label>
                             <textarea
+                                name="content"
                                 rows={4}
+                                required
                                 placeholder="Escreva os detalhes do projeto ou oportunidade..."
                                 className="w-full bg-white/80 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-black transition-colors resize-none"
                             />
                         </div>
 
+                        {feedback && (
+                            <div className={`p-3 rounded-xl text-xs font-medium border ${feedback.success ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                                {feedback.message}
+                            </div>
+                        )}
+
                         <button
                             type="submit"
-                            className="w-full bg-black text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-gray-800 transition-colors shadow-md cursor-pointer"
+                            disabled={loading}
+                            className="w-full bg-black text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-gray-800 transition-colors shadow-md cursor-pointer disabled:opacity-50"
                         >
-                            Enviar Mensagem
+                            {loading ? 'Enviando...' : 'Enviar Mensagem'}
                         </button>
                     </form>
                 </div>
