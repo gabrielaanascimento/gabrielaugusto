@@ -3,6 +3,7 @@ import { Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/app/_components/layout/Navbar";
 import { fetchAllPortfolioData } from "@/services/portfolioService";
+import { connection } from 'next/server';
 
 // Configurando a fonte Outfit (Sans-serif principal)
 const outfit = Outfit({
@@ -68,6 +69,7 @@ export default async function RootLayout({
   // Busca os dados diretamente; o app/loading.tsx gerencia a espera de forma global
   const portfolioData = await fetchAllPortfolioData();
   const navLinks = portfolioData?.navigation || [];
+  await connection();
 
   return (
     <html lang="pt-BR" className={`${outfit.variable} ${jetbrainsMono.variable}`}>
@@ -75,7 +77,7 @@ export default async function RootLayout({
         <Navbar navLinks={navLinks} />
         <main className="pt-20">
           {children}
-        </main>
+        </main><a href=""></a>
       </body>
     </html>
   );

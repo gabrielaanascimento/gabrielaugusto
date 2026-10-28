@@ -9,7 +9,8 @@ export interface ProjectDetails {
     owner: string;
     repo: string;
     techs: string[];
-    projectUrl: string;
+    githubUrl: string | null;
+    projectUrl: string | null; // URL do site em produção (frontend)
 }
 
 function extractRepoPath(url: string): { owner: string; repo: string } | null {
@@ -41,11 +42,12 @@ export async function getProjectDetailsService(id: string): Promise<ProjectDetai
             where: { id },
         });
 
-        if (!projectRecord || !projectRecord.projectUrl) {
+        // Agora validamos se existe o githubUrl para puxar a árvore do repositório
+        if (!projectRecord || !projectRecord.githubUrl) {
             return null;
         }
 
-        const repoInfo = extractRepoPath(projectRecord.projectUrl);
+        const repoInfo = extractRepoPath(projectRecord.githubUrl);
         if (!repoInfo) {
             throw new Error('Link do GitHub inválido cadastrado para este projeto.');
         }
@@ -57,7 +59,8 @@ export async function getProjectDetailsService(id: string): Promise<ProjectDetai
             owner: repoInfo.owner,
             repo: repoInfo.repo,
             techs: projectRecord.tags || [],
-            projectUrl: projectRecord.projectUrl,
+            githubUrl: projectRecord.githubUrl,
+            projectUrl: projectRecord.projectUrl || null, // URL do deploy/site
         };
     } catch (error) {
         console.error('Erro na getProjectDetailsService:', error);

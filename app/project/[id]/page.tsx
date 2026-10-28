@@ -4,6 +4,18 @@ import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { Particles } from "@/components/ui/particles";
 import { getProjectDetailsService, ProjectDetails } from '@/services/projectService';
+import { useHighlightedCode } from "@/hooks/use-highlighted-code";
+import { FileCodeIcon, WrapTextIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+    CodeBlock,
+    CodeBlockActions,
+    CodeBlockContent,
+    CodeBlockCopyButton,
+    CodeBlockHeader,
+    CodeBlockLine,
+    CodeBlockTitle,
+} from "@/components/ui/code-block";
 
 interface GitTreeItem {
     path: string;
@@ -30,12 +42,16 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
     const [selectedFile, setSelectedFile] = useState<{ path: string; content: string; size?: number; htmlUrl?: string } | null>(null);
     const [loadingFile, setLoadingFile] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [copied, setCopied] = useState<boolean>(false);
     const [token, setToken] = useState<string>('');
     const [isTokenModalOpen, setIsTokenModalOpen] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
-    // Carregar token salvo no navegador
+    // Estado de wrap para o CodeBlock
+    const [wrap, setWrap] = useState<boolean>(false);
+
+    // Hook do Shiki para destacar a sintaxe do arquivo selecionado
+    const highlightedLines = useHighlightedCode(selectedFile?.content || '', "ts");
+
     useEffect(() => {
         const savedToken = localStorage.getItem('gh_token');
         if (savedToken) setToken(savedToken);
@@ -46,7 +62,6 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
         setTimeout(() => setToastMessage(null), 3500);
     };
 
-    // 1. Buscar detalhes do projeto do banco via service
     useEffect(() => {
         async function fetchProject() {
             try {
@@ -66,7 +81,6 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
         fetchProject();
     }, [projectId]);
 
-    // Função centralizada para requisições à API do GitHub
     const fetchGitHubApi = async (endpoint: string) => {
         const headers: HeadersInit = {
             'Accept': 'application/vnd.github+json',
@@ -85,7 +99,6 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
         return await response.json();
     };
 
-    // 2. Carregar Branch padrão e Árvore de Arquivos
     useEffect(() => {
         if (!project) return;
 
@@ -141,7 +154,6 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
         showToast(`Branch alterada para ${newBranch}`, 'info');
     };
 
-    // 3. Carregar conteúdo de um arquivo específico
     const loadFileContent = async (path: string) => {
         if (!project) return;
         setLoadingFile(true);
@@ -172,14 +184,6 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
         }
     };
 
-    const copyFileContent = () => {
-        if (!selectedFile) return;
-        navigator.clipboard.writeText(selectedFile.content);
-        setCopied(true);
-        showToast('Código copiado para a área de transferência!', 'success');
-        setTimeout(() => setCopied(false), 2000);
-    };
-
     const formatBytes = (bytes?: number) => {
         if (!bytes || bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -199,7 +203,7 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
             <div className="relative min-h-screen bg-[#eaeaea] text-gray-900 flex items-center justify-center font-sans">
                 <div className="flex items-center space-x-3 bg-white/85 backdrop-blur-md px-6 py-4 rounded-2xl border border-gray-200 shadow-sm">
                     <i className="fa-solid fa-spinner fa-spin text-xl text-black"></i>
-                    <span className="text-sm font-medium">A carregar informações do projeto...</span>
+                    <span className="text-sm font-medium">Carregando informações do projeto...</span>
                 </div>
             </div>
         );
@@ -215,7 +219,7 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
                         <Link href="/projects" className="text-xs uppercase tracking-wider text-gray-500 hover:text-black transition-colors mb-2 inline-block font-medium">
                             ← Voltar aos Projetos
                         </Link>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 flex items-center gap-3">
+                        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 flex items-center gap-3 flex-wrap">
                             {project?.title || `Projeto: ${projectId}`}
                             <span className="text-xs px-3 py-1 bg-black text-white rounded-full font-medium">
                                 {project?.owner}/{project?.repo}
@@ -226,7 +230,31 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
+                        {project?.projectUrl && (
+                            <a
+                                href={project.projectUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center space-x-2 bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm"
+                            >
+                                <i className="fa-solid fa-globe"></i>
+                                <span>Acessar Site</span>
+                            </a>
+                        )}
+
+                        {project?.githubUrl && (
+                            <a
+                                href={project.githubUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-900 border border-gray-300 px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm"
+                            >
+                                <i className="fa-brands fa-github text-base"></i>
+                                <span>Repositório</span>
+                            </a>
+                        )}
+
                         <select
                             value={branch}
                             onChange={(e) => handleBranchChange(e.target.value)}
@@ -248,7 +276,7 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
                     </div>
                 </div>
 
-                {/* Grid: File Tree (Esquerda) & Code Block (Direita) */}
+                {/* Grid: File Tree & CodeBlock */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
                     {/* File Tree Component */}
@@ -286,8 +314,8 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
                                             onClick={() => !isDir && loadFileContent(item.path)}
                                             style={{ paddingLeft: `${Math.max(8, depth * 14 + 8)}px` }}
                                             className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono cursor-pointer transition-all ${isDir
-                                                    ? 'text-gray-800 font-semibold hover:bg-gray-100'
-                                                    : 'text-gray-600 hover:bg-black/5 hover:text-black'
+                                                ? 'text-gray-800 font-semibold hover:bg-gray-100'
+                                                : 'text-gray-600 hover:bg-black/5 hover:text-black'
                                                 }`}
                                         >
                                             <div className="flex items-center truncate mr-2">
@@ -304,53 +332,50 @@ export default function ProjectExplorerPage({ params }: { params: Promise<{ id: 
                         </div>
                     </div>
 
-                    {/* Code Block Component (Estilo IDE) */}
-                    <div className="lg:col-span-7 bg-[#1e1e1e] rounded-2xl border border-gray-800 shadow-xl flex flex-col h-[560px] overflow-hidden text-gray-200">
-                        <div className="bg-[#2d2d2d] px-4 py-3 flex items-center justify-between border-b border-gray-700 text-xs font-mono">
-                            <div className="flex items-center gap-2">
-                                <span className="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
-                                <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
-                                <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
-                                <span className="ml-2 text-gray-300 truncate max-w-[220px]">
-                                    {selectedFile ? selectedFile.path : 'Nenhum arquivo selecionado'}
-                                </span>
-                            </div>
-                            {selectedFile && (
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={copyFileContent}
-                                        className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-md transition-colors text-[11px]"
-                                    >
-                                        {copied ? 'Copiado! ✓' : 'Copiar'}
-                                    </button>
-                                    <a
-                                        href={selectedFile.htmlUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-md transition-colors text-[11px]"
-                                    >
-                                        GitHub ↗
-                                    </a>
-                                </div>
-                            )}
-                        </div>
+                    {/* CodeBlock Component idêntico à referência */}
+                    <div className="lg:col-span-7 flex flex-col h-[560px]">
+                        <CodeBlock className="h-full flex flex-col rounded-2xl overflow-hidden shadow-xl border border-gray-800 bg-[#0d1117] text-gray-200">
+                            <CodeBlockHeader className="bg-[#161b22] border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+                                <CodeBlockTitle className="text-xs font-mono text-gray-300 flex items-center gap-2">
+                                    <i className="fa-solid fa-file-code text-blue-400"></i>
+                                    <span>{selectedFile ? selectedFile.path : 'Nenhum arquivo selecionado'}</span>
+                                </CodeBlockTitle>
+                                <CodeBlockActions className="flex items-center gap-2">
+                                    {selectedFile && (
+                                        <>
+                                            <CodeBlockCopyButton value={selectedFile.content} />
+                                            <a
+                                                href={selectedFile.htmlUrl}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded text-xs font-medium transition flex items-center gap-1"
+                                            >
+                                                <span>GitHub ↗</span>
+                                            </a>
+                                        </>
+                                    )}
+                                </CodeBlockActions>
+                            </CodeBlockHeader>
 
-                        <div className="flex-1 overflow-auto p-4 font-mono text-xs leading-relaxed bg-[#1e1e1e] relative">
-                            {!selectedFile ? (
-                                <div className="flex flex-col items-center justify-center h-full text-gray-500 space-y-2">
-                                    <span className="text-2xl">💻</span>
-                                    <p>Selecione um arquivo na árvore à esquerda para visualizar o código fonte.</p>
-                                </div>
-                            ) : loadingFile ? (
-                                <div className="absolute inset-0 bg-[#1e1e1e]/80 backdrop-blur-sm z-20 flex items-center justify-center text-gray-400">
-                                    Carregando código...
-                                </div>
-                            ) : (
-                                <pre className="text-gray-300 whitespace-pre-wrap">
-                                    <code>{selectedFile.content}</code>
-                                </pre>
-                            )}
-                        </div>
+                            <div className="flex-1 overflow-auto relative bg-[#0d1117] p-4">
+                                {!selectedFile ? (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 p-6 text-center space-y-2">
+                                        <span className="text-2xl">💻</span>
+                                        <p className="text-xs">Selecione um arquivo na árvore à esquerda para visualizar o código fonte.</p>
+                                    </div>
+                                ) : loadingFile ? (
+                                    <div className="absolute inset-0 bg-[#0d1117]/80 backdrop-blur-sm z-20 flex items-center justify-center text-gray-400 text-xs">
+                                        Carregando código...
+                                    </div>
+                                ) : (
+                                    <CodeBlockContent lineNumbers className="font-mono text-xs leading-relaxed text-gray-300">
+                                        {selectedFile.content.split('\n').map((line, index) => (
+                                            <CodeBlockLine key={index}>{line}</CodeBlockLine>
+                                        ))}
+                                    </CodeBlockContent>
+                                )}
+                            </div>
+                        </CodeBlock>
                     </div>
 
                 </div>
