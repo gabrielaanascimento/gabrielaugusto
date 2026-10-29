@@ -13,21 +13,24 @@ export function ContactSection() {
         setLoading(true);
         setFeedback(null);
 
-        const formData = new FormData(e.currentTarget);
+        const form = e.currentTarget;
+        const formData = new FormData(form);
         const name = formData.get('name') as string;
         const email = formData.get('email') as string;
+        const phone = formData.get('phone') as string;
         const content = formData.get('content') as string;
 
         try {
-            const result = await saveContactMessage({ name, email, content });
+            const result = await saveContactMessage({ name, email, phone, content });
 
-            if (result.success) {
+            if (result && result.success) {
                 setFeedback({ success: true, message: 'Mensagem enviada com sucesso! Obrigado pelo contato.' });
-                e.currentTarget.reset(); // Limpa o formulário
+                form.reset();
             } else {
-                setFeedback({ success: false, message: result.error || 'Ocorreu um erro ao enviar.' });
+                setFeedback({ success: false, message: result?.error || 'Ocorreu um erro ao enviar.' });
             }
         } catch (err) {
+            console.error('Erro no client:', err);
             setFeedback({ success: false, message: 'Erro de conexão. Tente novamente.' });
         } finally {
             setLoading(false);
@@ -51,10 +54,8 @@ export function ContactSection() {
                     </p>
                 </div>
 
-                {/* Cards de Informação de Contato (Grid 2x2 com Liquid Glass) */}
+                {/* Cards de Informação de Contato */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    {/* Email */}
                     <a
                         href="mailto:gabrielaugustoassisnascimento@gmail.com"
                         className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center gap-4 group"
@@ -68,7 +69,6 @@ export function ContactSection() {
                         </div>
                     </a>
 
-                    {/* Telefone */}
                     <a
                         href="tel:+5511952812474"
                         className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center gap-4 group"
@@ -82,7 +82,6 @@ export function ContactSection() {
                         </div>
                     </a>
 
-                    {/* Localização */}
                     <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl p-5 shadow-sm flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-black text-white flex items-center justify-center shrink-0">
                             <FaMapMarkerAlt className="w-5 h-5" />
@@ -93,7 +92,6 @@ export function ContactSection() {
                         </div>
                     </div>
 
-                    {/* LinkedIn */}
                     <a
                         href="https://linkedin.com/in/gabriel-augusto-assis-nascimento"
                         target="_blank"
@@ -108,7 +106,6 @@ export function ContactSection() {
                             <p className="text-xs md:text-sm font-semibold text-gray-900 truncate">gabriel-augusto-assis-nascimento</p>
                         </div>
                     </a>
-
                 </div>
 
                 {/* Bloco do Formulário */}
@@ -139,6 +136,19 @@ export function ContactSection() {
                                     className="w-full bg-white/80 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-black transition-colors"
                                 />
                             </div>
+                        </div>
+
+                        {/* Novo campo de Telefone (Opcional) */}
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                Telefone <span className="text-gray-400 font-normal">(Opcional)</span>
+                            </label>
+                            <input
+                                type="tel"
+                                name="phone"
+                                placeholder="(11) 99999-9999"
+                                className="w-full bg-white/80 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-black transition-colors"
+                            />
                         </div>
 
                         <div>
