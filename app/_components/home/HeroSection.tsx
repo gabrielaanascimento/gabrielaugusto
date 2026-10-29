@@ -1,6 +1,6 @@
 import { TerminalCard } from './TerminalCard';
 import { ProfileCard } from './ProfileCard';
-import pictureProfile from '../../../public/picture-profile.jpeg';
+import pictureProfile from '../../../public/avatar.jpg';
 
 export function HeroSection() {
     return (
