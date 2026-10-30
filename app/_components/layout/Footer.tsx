@@ -43,7 +43,7 @@ export function Footer() {
                 {/* Lado Direito: Redes Sociais com Estilo Liquid Glass */}
                 <div className="flex items-center gap-3">
                     <a
-                        href="https://github.com"
+                        href="https://github.com/gabrielaanascimento"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md border border-white/80 shadow-2xs flex items-center justify-center text-gray-800 hover:bg-black hover:text-white transition-all"
@@ -52,7 +52,7 @@ export function Footer() {
                         <FaGithub className="w-4 h-4" />
                     </a>
                     <a
-                        href="https://linkedin.com/in/gabriel-augusto-assis-nascimento"
+                        href="https://www.linkedin.com/in/gabriel-augusto-assis-nascimento-5342b3216/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-10 h-10 rounded-full bg-white/60 backdrop-blur-md border border-white/80 shadow-2xs flex items-center justify-center text-gray-800 hover:bg-black hover:text-white transition-all"

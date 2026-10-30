@@ -93,7 +93,7 @@ export function ContactSection() {
                     </div>
 
                     <a
-                        href="https://linkedin.com/in/gabriel-augusto-assis-nascimento"
+                        href="https://www.linkedin.com/in/gabriel-augusto-assis-nascimento-5342b3216/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center gap-4 group"
